@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Illuminating Worlds: Lighting in Video Games and Architecture | AES Engineering</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #1F1F1F;
+            background: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 0.5rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-text {
+            color: #1F1F1F;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #1F1F1F;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            color: #00ADDC;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00ADDC;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" stop-color="%23ffffff" stop-opacity="0.1"/><stop offset="100%" stop-color="%23ffffff" stop-opacity="0"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="400" cy="700" r="120" fill="url(%23a)"/><circle cx="900" cy="800" r="80" fill="url(%23a)"/></svg>') no-repeat center center;
+            background-size: cover;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(1deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: #00ADDC;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 173, 220, 0.3);
+            animation: fadeInUp 1s ease-out 0.6s both;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 173, 220, 0.4);
+            background: #0099C7;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 5rem 0;
+            position: relative;
+        }
+
+        .section:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: #00ADDC;
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Overview Section */
+        .overview {
+            background: linear-gradient(135deg, #00ADDC 0%, #0099C7 100%);
+            color: white;
+        }
+
+        .overview .section-title {
+            color: white;
+        }
+
+        .overview .section-title::after {
+            background: white;
+        }
+
+        .overview .section-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .objective-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .objective-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .objective-card h3 {
+            margin-bottom: 1rem;
+            color: #00ADDC;
+        }
+
+        /* Session Content */
+        .session {
+            margin-bottom: 4rem;
+        }
+
+        .session-header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .session-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%23ffffff" opacity="0.1"/><circle cx="80" cy="40" r="1.5" fill="%23ffffff" opacity="0.1"/><circle cx="40" cy="80" r="1" fill="%23ffffff" opacity="0.1"/></svg>') repeat;
+            animation: twinkle 10s linear infinite;
+        }
+
+        @keyframes twinkle {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(100px); }
+        }
+
+        .session-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .session-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .learning-objectives {
+            background: #f0f9ff;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border-left: 5px solid #00ADDC;
+        }
+
+        .learning-objectives h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .learning-objectives ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .learning-objectives li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .learning-objectives li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+        }
+
+        .discussion-points {
+            margin: 2rem 0;
+        }
+
+        .discussion-points h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .discussion-points p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        /* Case Studies */
+        .case-studies {
+            margin: 3rem 0;
+        }
+
+        .case-study {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #00ADDC;
+            transition: transform 0.3s ease;
+        }
+
+        .case-study:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .case-study h4 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .case-study p {
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        /* Interactive Elements */
+        .interactive-element {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .interactive-element h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .interactive-element p {
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        .challenge-button {
+            background: #00ADDC;
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 173, 220, 0.3);
+        }
+
+        .challenge-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 173, 220, 0.4);
+            background: #0099C7;
+        }
+
+        /* Visual Examples */
+        .visual-example {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+            border: 2px dashed #dee2e6;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .visual-example h4 {
+            color: #495057;
+            margin-bottom: 1rem;
+        }
+
+        .visual-example p {
+            font-style: italic;
+            color: #6c757d;
+        }
+
+        .visual-example img {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Image Gallery */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .gallery-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Side-by-side images */
+        .image-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-item {
+            text-align: center;
+        }
+
+        .comparison-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-item h4 {
+            margin: 1rem 0 0.5rem;
+            color: #2c3e50;
+        }
+
+        .comparison-item p {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        /* References */
+        .references {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0;
+        }
+
+        .references h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #00ADDC;
+        }
+
+        .reference-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .reference-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #00ADDC;
+        }
+
+        .reference-item a {
+            color: #00ADDC;
+            text-decoration: none;
+        }
+
+        .reference-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .objectives-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .image-comparison {
+                grid-template-columns: 1fr;
+            }
+
+            .image-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: #00ADDC;
+            z-index: 1001;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <nav class="nav" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <img src="https://images.squarespace-cdn.com/content/v1/6375d83efe581663b51064d7/84bb8ef0-3298-45f7-a295-87fa45b0698f/AES-Logo-green.png" alt="AES Engineering">
+                    <span class="logo-text">Illuminating Worlds</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#overview">Overview</a></li>
+                    <li><a href="#session1">Session 1</a></li>
+                    <li><a href="#session2">Session 2</a></li>
+                    <li><a href="#session3">Session 3</a></li>
+                    <li><a href="#session4">Session 4</a></li>
+                    <li><a href="#conclusion">Conclusion</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Illuminating Worlds</h1>
+            <p>Lighting in Video Games and Architecture</p>
+            <a href="#overview" class="cta-button">Begin Journey</a>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <!-- Overview Section -->
+        <section id="overview" class="section overview">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Overview and Objectives</h2>
+                    <p class="section-subtitle">Lighting is a fundamental creative tool in both video game design and architectural design. In each domain, it is used not only for visibility but to shape how spaces feel and how people navigate and interpret those spaces.</p>
+                </div>
+                
+                <div class="objectives-grid">
+                    <div class="objective-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Creative lighting design" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🎨 Creative Expression</h3>
+                        <p>Modern designers recognize that lighting powerfully influences human experience -- from our emotions and mood to our sense of orientation.</p>
+                    </div>
+                    <div class="objective-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Gaming environment lighting" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🎮 Game Development</h3>
+                        <p>Game developers know that strategic lighting can guide players and enrich storytelling in a virtual world.</p>
+                    </div>
+                    <div class="objective-card fade-in">
+                        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Architectural lighting" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🏗️ Architecture</h3>
+                        <p>Architects use lighting to create atmospheres, guide movement, and tell stories through the built environment.</p>
+                    </div>
+                </div>
+
+                <div class="learning-objectives fade-in">
+                    <h3>Structure</h3>
+                    <p>The syllabus is divided into four main sessions plus an introduction and conclusion. Each session includes clear learning objectives, key discussion points, real-world and game case studies (with visuals where appropriate), and interactive elements or prompts. The aim is to engage architects, interior designers, and construction professionals in dialogue with concepts from video game lighting design, highlighting cross-disciplinary insights.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Session 1 -->
+        <section id="session1" class="section">
+            <div class="container">
+                <div class="session">
+                    <div class="session-header">
+                        <h2 class="session-title">Session 1: Light and Mood -- Setting the Atmosphere</h2>
+                        <p class="session-subtitle">Understanding how lighting establishes mood and atmosphere in both virtual and physical spaces</p>
+                    </div>
+
+                    <div class="learning-objectives fade-in">
+                        <h3>Learning Objectives</h3>
+                        <ul>
+                            <li>Identify how lighting establishes <span class="highlight">mood and atmosphere</span> in both a video game scene and a physical space.</li>
+                            <li>Understand the effects of color temperature, light intensity, and contrast on human emotion and perception in an environment.</li>
+                            <li>Compare techniques used by game artists and architects to evoke feelings of peace, warmth, tension, or mystery through lighting design.</li>
+                        </ul>
+                    </div>
+
+                    <div class="discussion-points fade-in">
+                        <h3>Key Discussion Points</h3>
+                        
+                        <h4>Color and Emotion</h4>
+                        <p>How warm vs. cool light colors influence mood. Warm golden lighting evokes comfort or excitement, whereas cool blue lighting feels calm or even somber. Discussion will include color psychology in interiors (such as warm lighting in restaurants for intimacy vs. cool lighting in hospitals for alertness) and analogous uses in games (a sunny <strong>Mario</strong> level vs. a cold blue <strong>mystery</strong> puzzle level).</p>
+
+                        <h4>Brightness and Contrast</h4>
+                        <p>How brightness levels and shadows create ambience. Well-lit open spaces often feel safe or uplifting, whereas dim, shadowy environments add drama or suspense. In games, a <strong>bright meadow</strong> scene can convey tranquility, while a <strong>dark corridor</strong> builds tension. Similarly, in architecture, a sun-filled atrium might feel tranquil, while a low-lit narrow hallway can induce a sense of mystery or anxiety.</p>
+
+                        <h4>Architectural Atmosphere</h4>
+                        <p>Review of real projects where lighting "makes" the space. For instance, examine a tranquil spa or library with soft diffuse daylight versus a nightclub or theater lobby with bold, colored accent lights. How do these choices support the intended use and feeling of the space?</p>
+
+                        <h4>Game Environment Atmosphere</h4>
+                        <p>Case examples from games known for mood lighting -- e.g. the haunting, low-light atmosphere of <strong>Dark Souls</strong> or the vibrant, glowing vistas of <strong>Cyberpunk 2077</strong>. What feelings do these lighting styles create, and why? How do game artists use techniques like fog, backlight, or color grading to amplify mood?</p>
+                    </div>
+
+                    <div class="case-studies fade-in">
+                        <h3>Case Studies & Visual Examples</h3>
+                        
+                        <div class="visual-example">
+                            <h4>Dark Souls 3 Environment</h4>
+                            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Dark atmospheric gaming environment with dramatic lighting">
+                            <p>A gloomily lit video game environment using minimal light and deep shadows to evoke tension and despair. In this scene, narrow hallways and flickering lights contribute to a feeling of isolation and danger. Game designers manipulate light intensity and placement to instantly convey emotional tone -- a design tactic equally relevant to architects crafting mood in physical spaces.</p>
+                        </div>
+
+                        <div class="image-comparison">
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Historic castle with dramatic lighting">
+                                <h4>Historic Castle</h4>
+                                <p>Real-world atmospheric lighting</p>
+                            </div>
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gaming environment with dark atmosphere">
+                                <h4>Gaming Environment</h4>
+                                <p>Virtual atmospheric lighting</p>
+                            </div>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Case 1 -- Haunted Mansion vs. Historic Castle</h4>
+                            <p>A comparison between a survival-horror game level set in a decrepit mansion and a real historic castle museum exhibit. Both use sparse lighting and high contrast. In the game, flickering lamps and long shadows build fear; in the real castle, spotlighting a few artifacts in otherwise dark rooms creates an eerie, reverent atmosphere. We discuss how each leverages human fear of the dark and love of mystery.</p>
+                        </div>
+
+                        <div class="image-comparison">
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Cozy warm interior lighting">
+                                <h4>Warm Welcome</h4>
+                                <p>Cozy tavern atmosphere</p>
+                            </div>
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern office with cool lighting">
+                                <h4>Cold Efficiency</h4>
+                                <p>Modern office environment</p>
+                            </div>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Case 2 -- Warm Welcome vs. Cold Efficiency</h4>
+                            <p>Contrast a cozy in-game tavern scene (warm, low fireplace light, snug corners) with a modern minimalist office lobby (bright, cool illumination). Participants consider how lighting choices in each space support their function and desired emotional response -- relaxation and hospitality in one, energetic productivity in the other.</p>
+                        </div>
+                    </div>
+
+                    <div class="interactive-element fade-in">
+                        <h3>Interactive Element: "Mood Lighting Design Challenge"</h3>
+                        <p>Attendees break into small groups. Each group is given a mood (for example: <strong>serene dawn</strong>, <strong>stormy anxiety</strong>, or <strong>futuristic excitement</strong>) and must develop a quick lighting concept for both a game scene and a real room that evoke this mood.</p>
+                        <button class="challenge-button" onclick="startMoodChallenge()">Start Challenge</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Session 2 -->
+        <section id="session2" class="section">
+            <div class="container">
+                <div class="session">
+                    <div class="session-header">
+                        <h2 class="session-title">Session 2: Guiding the Gaze -- Lighting for Orientation and Wayfinding</h2>
+                        <p class="session-subtitle">Understanding how designers use lighting as a wayfinding and guidance tool in both virtual levels and physical buildings</p>
+                    </div>
+
+                    <div class="learning-objectives fade-in">
+                        <h3>Learning Objectives</h3>
+                        <ul>
+                            <li>Understand how designers use lighting as a <span class="highlight">wayfinding and guidance tool</span> in both virtual levels and physical buildings.</li>
+                            <li>Learn techniques to direct attention or movement using focal light, contrast, and visual cues.</li>
+                            <li>Explore the subconscious influence of light on where people look and how they navigate, drawing parallels between a player's journey through a game level and a person's path through a building.</li>
+                        </ul>
+                    </div>
+
+                    <div class="discussion-points fade-in">
+                        <h3>Key Discussion Points</h3>
+                        
+                        <h4>Attention and Focal Points</h4>
+                        <p>Using light to highlight what's important. In architecture, lighting designers often accentuate key features (like an entrance, an exit sign, or a reception desk) with brighter or focused lighting, creating a visual hierarchy in the space. In games, level designers do the same -- a ray of light might fall on a door or item that the player needs to find, or a brightly lit area indicates the correct path amidst darker surroundings.</p>
+
+                        <h4>Wayfinding and Navigation</h4>
+                        <p>How lighting "leads" people along. Humans are inherently drawn toward illuminated areas. We will look at design studies (e.g. a Clemson University experiment) showing that people will intuitively walk toward a lit corridor over a dark one, even against signage. In architecture, this principle is used in corridor lighting, path lights, and atrium designs that draw visitors deeper into a space. In games, think of how <strong>Portal 2</strong> uses a consistent lighting and color scheme to signal portals and exits -- players subconsciously follow the light and color cues to solve puzzles.</p>
+
+                        <h4>Spatial Orientation</h4>
+                        <p>Lighting helps people <strong>understand space</strong> and position. Discuss how shadows and highlights can reveal spatial depth -- in a game, dynamic lighting and shadows give clues about the geometry of the environment (e.g. distinguishing a platform's edge), while in architecture, good lighting ensures stairs, ramps, or obstacles are perceptible for safety and comfort.</p>
+
+                        <h4>Reducing Visual Clutter</h4>
+                        <p>Emphasize how intentional lighting design can reduce reliance on signs or on-screen HUD indicators. When light is used smartly, fewer arrows or signs are needed -- the environment <em>itself</em> tells you where to go. Architects often strive for "intuitive wayfinding" in which lighting plays a part (e.g. a naturally bright atrium signals the main gathering space). Game designers similarly aim for diegetic cues -- using environmental lights instead of UI markers to guide players.</p>
+                    </div>
+
+                    <div class="case-studies fade-in">
+                        <h3>Case Studies & Examples</h3>
+                        
+                        <div class="image-gallery">
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Portal-like futuristic corridor with guiding lights">
+                                <div class="gallery-caption">Portal 2's Test Chambers - Guiding Light Design</div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Hospital corridor with wayfinding lighting">
+                                <div class="gallery-caption">Hospital Corridor Wayfinding</div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Museum with strategic lighting">
+                                <div class="gallery-caption">Museum Lighting Strategy</div>
+                            </div>
+                        </div>
+                        
+                        <div class="case-study">
+                            <h4>Case 3 -- Portal 2's Test Chambers</h4>
+                            <p>In <em>Portal 2</em>, players navigate complex puzzle rooms. One way the game subtly guides players is through lighting and color -- important surfaces and exits are well-lit or painted in high-contrast colors, while unimportant areas remain dim. This provides <em>"unconscious"</em> direction for the player. We will show a screenshot of a Portal 2 chamber, noting how a brightly lit doorway naturally attracts the eye.</p>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Case 4 -- Hospital Corridor Wayfinding</h4>
+                            <p>A segment from a healthcare design where lighting was critical to wayfinding -- for example, an LED-lit feature wall at the end of a long corridor in a hospital that draws visitors forward, or the use of colored lighting in different wings to differentiate them. This illustrates replacing or augmenting signage with lighting cues (a chandelier or glowing sculpture says "come this way" without a sign reading "Lobby here").</p>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Cross-Comparison</h4>
+                            <p>We explicitly compare the above two cases: What similarities exist between how <em>Portal 2</em> and a hospital lobby use lighting to direct people? Participants might note the emphasis on clarity and reducing confusion in both. We also touch on constraints: unlike games, real buildings have to consider glare and comfort (too much brightness can physically hurt the eyes), whereas in a game a dramatic lens flare might be acceptable or even exciting.</p>
+                        </div>
+                    </div>
+
+                    <div class="interactive-element fade-in">
+                        <h3>Interactive Element: "Light the Path" Group Discussion</h3>
+                        <p>We present a simple floor plan of a public space (for instance, a small museum or an outdoor plaza). The task for participants is to propose a lighting strategy that guides a first-time visitor through this space from entrance to exit, highlighting key points of interest.</p>
+                        <button class="challenge-button" onclick="startPathChallenge()">Start Path Challenge</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Session 3 -->
+        <section id="session3" class="section">
+            <div class="container">
+                <div class="session">
+                    <div class="session-header">
+                        <h2 class="session-title">Session 3: Storytelling with Light -- Narrative and Emotion</h2>
+                        <p class="session-subtitle">Exploring how lighting can serve as a storytelling device in both interactive virtual worlds and static architectural spaces</p>
+                    </div>
+
+                    <div class="learning-objectives fade-in">
+                        <h3>Learning Objectives</h3>
+                        <ul>
+                            <li>Explore how lighting can serve as a <span class="highlight">storytelling device</span> in both interactive virtual worlds and static architectural spaces.</li>
+                            <li>Learn about techniques like dynamic lighting changes, thematic lighting, and symbolic use of light and shadow that convey narrative or thematic content.</li>
+                            <li>Analyze parallels between theatrical/stage lighting for drama and how architects and game designers alike use lighting to support a story or message in the environment.</li>
+                        </ul>
+                    </div>
+
+                    <div class="discussion-points fade-in">
+                        <h3>Key Discussion Points</h3>
+                        
+                        <h4>Environmental Storytelling</h4>
+                        <p>Both architects and game designers use lighting to <em>imply backstory or narrative context</em> without words. In games, a flickering neon sign in an alley suggests a city's decay or a lurking danger, whereas a shaft of light breaking through a dilapidated roof can symbolize hope in a narrative. In architecture, consider how the lighting of a memorial at night (e.g. two vertical beams of light at the 9/11 Memorial in NYC) tells a story of remembrance, or how an old cathedral's dim, colored light through stained glass conveys a sense of sacred history.</p>
+
+                        <h4>Dynamic Lighting and Progression</h4>
+                        <p>In narratives, lighting often changes to reflect story progression. We see this in theater and films through lighting cues for different acts or emotional beats. Games borrow this idea: as a story level reaches a climax, the lighting might shift (a storm rolls in, lights flicker, or color grading turns red for danger). Architects can also design dynamic lighting into spaces -- e.g. a restaurant that gradually dims lights as the evening progresses to transform the atmosphere, or an interactive installation that changes color based on visitor activity.</p>
+
+                        <h4>Theatrical Techniques in Architecture</h4>
+                        <p>Drawing from stage and film, architectural lighting designers use intensity, color, angle, and movement to <em>dramatize</em> a space. We will break down a few theatrical lighting concepts: for example, <strong>gobos</strong> projecting patterns of light and shadow (used in theater to simulate dappled foliage or stained glass effects) and see how an architect might use patterned screens or filtered daylight for a similar storytelling effect in a space.</p>
+
+                        <h4>Symbolism and Meaning</h4>
+                        <p>Sometimes light itself carries metaphor or symbolism. In sacred architecture, the interplay of light and dark often represents spiritual themes (light = divine presence, etc.). We'll see how <strong>Tadao Ando's Church of Light</strong> embodies the concept of duality (material vs. immaterial, light vs. dark as metaphors for spiritual enlightenment) -- a reminder that architects intentionally design lighting not just for function but to support the story or concept of the space.</p>
+                    </div>
+
+                    <div class="case-studies fade-in">
+                        <h3>Case Studies & Visual Examples</h3>
+                        
+                        <div class="visual-example">
+                            <h4>Tadao Ando's Church of Light, Osaka</h4>
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tadao Ando's Church of Light with dramatic natural lighting">
+                            <p>A powerful architectural example of storytelling through natural light. A cross-shaped aperture in the concrete wall projects a brilliant cruciform of light that moves across the darkened chapel as the sun shifts. This dramatic contrast of light and shadow is central to the church's narrative experience, turning the interior into an ever-changing canvas of illumination. The design conveys a metaphor -- the interpenetration of the spiritual (light) into the material (concrete darkness) -- allowing visitors to <em>feel</em> a story of faith and contemplation without any words.</p>
+                        </div>
+
+                        <div class="image-comparison">
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Art Deco interior with golden lighting">
+                                <h4>Art Deco Cinema</h4>
+                                <p>Real-world nostalgic lighting</p>
+                            </div>
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="BioShock-style underwater city atmosphere">
+                                <h4>BioShock's Rapture</h4>
+                                <p>Game environment storytelling</p>
+                            </div>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Case 5 -- BioShock's Rapture vs. Real Art Deco Space</h4>
+                            <p>We examine the underwater city of Rapture in <em>BioShock</em> as a game environment rich with narrative lighting. Flickering signage, dim hallways, and occasional golden spotlights in Rapture convey both the former glamour and the grim decay of that world. In parallel, we look at a real-world example: the interior of an old Art Deco cinema or ballroom that has been preserved or restored. Note how lighting is used to evoke nostalgia and storytelling -- perhaps chandeliers with warm glow recalling a bygone era.</p>
+                        </div>
+
+                        <div class="image-comparison">
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Horror game environment with dramatic lighting">
+                                <h4>Horror Game Environment</h4>
+                                <p>Virtual psychological lighting</p>
+                            </div>
+                            <div class="comparison-item">
+                                <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Haunted house attraction lighting">
+                                <h4>Haunted House Attraction</h4>
+                                <p>Real-world psychological lighting</p>
+                            </div>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Case 6 -- Horror Game vs. Haunted House Attraction</h4>
+                            <p>To illustrate cross-inspiration, we pair a level from a horror video game (for instance, <em>Resident Evil 7</em>'s decrepit house lit only by flashlight and candle, full of sudden darkness and reveal moments) with a real haunted house attraction design (where lighting is deliberately sparse and timed to surprise or startle visitors). Both rely on the <em>psychology of darkness</em> and anticipation.</p>
+                        </div>
+                    </div>
+
+                    <div class="interactive-element fade-in">
+                        <h3>Interactive Element: "Storyboarding with Light"</h3>
+                        <p>Participants individually sketch a <strong>lighting storyboard</strong> for a short narrative in a space. They choose either a game scenario (e.g. a hero exploring an ancient temple) or a real-world scenario (e.g. a visitor walking through a historical exhibit). In 4--6 panels, they draw or describe how the lighting would change sequentially to support the story beats.</p>
+                        <button class="challenge-button" onclick="startStoryboardChallenge()">Start Storyboard Challenge</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Session 4 -->
+        <section id="session4" class="section">
+            <div class="container">
+                <div class="session">
+                    <div class="session-header">
+                        <h2 class="session-title">Session 4: Cross-Inspiration and Synthesis -- Bridging Game and Architectural Lighting</h2>
+                        <p class="session-subtitle">Synthesizing insights to understand how architects and game designers can learn from each other's approach to lighting</p>
+                    </div>
+
+                    <div class="learning-objectives fade-in">
+                        <h3>Learning Objectives</h3>
+                        <ul>
+                            <li>Synthesize the insights from earlier sessions to understand <span class="highlight">how architects and game designers can learn from each other's approach to lighting</span>.</li>
+                            <li>Recognize both the constraints and freedoms of each medium: what can be done in games that real architecture can adapt conceptually, and how real-world lighting considerations (human comfort, physical materials) can inform game lighting for realism and relatability.</li>
+                            <li>Brainstorm innovative ideas by combining best practices from both fields, and consider future trends (dynamic, interactive lighting, virtual reality) impacting lighting design.</li>
+                        </ul>
+                    </div>
+
+                    <div class="discussion-points fade-in">
+                        <h3>Key Discussion Points</h3>
+                        
+                        <h4>Comparing Constraints</h4>
+                        <p>We start by acknowledging differences -- in architecture, lighting must obey physics and meet practical requirements (energy codes, maintenance, occupant comfort), whereas in video games lighting can break physical rules for the sake of art or gameplay. For example, in a game you might have a light with no visible source or ignore gravity and power sources, something impossible in a real building. Conversely, architects deal with long-term experiences (people live and work under these lights daily), while game lighting is experienced for short play sessions.</p>
+
+                        <h4>Lessons from Game Lighting for Architects</h4>
+                        <p><strong>Immersion and Experimentation:</strong> Game worlds often have wildly imaginative lighting (otherworldly colors, "impossible" scenarios like floating lights or interactive day-night cycles). While not all of that translates directly, it can inspire architects to experiment with bolder lighting designs in themed environments, exhibitions, or experiential spaces.</p>
+                        
+                        <p><strong>Pre-visualization and Simulation:</strong> Game development pipelines use powerful real-time engines to test lighting iteratively. Architects can borrow this practice -- using game engines or VR simulations to <em>visualize and play with lighting in a virtual model</em> of a building.</p>
+
+                        <p><strong>Environmental Storytelling in Placemaking:</strong> Video games excel at making environments that convey lore and invite exploration. Architects and urban designers aiming to create memorable places (public squares, themed restaurants, hotels) can take cues from how games use lighting to define a strong sense of place or identity.</p>
+
+                        <h4>Lessons from Architectural Lighting for Game Designers</h4>
+                        <p><strong>Human-Centric Design:</strong> Architects increasingly design lighting for occupant well-being, considering factors like circadian rhythms, glare reduction, and psychological comfort. Game lighting artists could incorporate some of these principles to enhance player comfort and realism.</p>
+
+                        <p><strong>Technical Collaboration:</strong> In building projects, lighting designers work closely with architects, electrical engineers, etc., balancing aesthetics with technical feasibility. In game production, lighting artists can similarly collaborate with engine programmers and level designers to ensure their dramatic lighting doesn't impede gameplay.</p>
+
+                        <p><strong>Sustainable & Adaptive Lighting:</strong> A growing trend in architecture is sustainable lighting -- using smart controls, daylight harvesting, etc. While games don't have an energy bill, the concept of <em>efficient lighting</em> aligns with optimizing performance (rendering fewer light sources saves computation).</p>
+
+                        <h4>Future Trends -- Convergence of Real and Virtual</h4>
+                        <p>We conclude this session by looking at areas where architectural and game lighting are directly overlapping. For example, <strong>Augmented Reality (AR)</strong> and <strong>Virtual Reality (VR)</strong> are being used by architects to create virtual spaces and by game designers to bring game worlds into the real environment. The cross-pollination potential is huge, and staying open to ideas from each other's discipline will be a competitive advantage.</p>
+                    </div>
+
+                    <div class="case-studies fade-in">
+                        <h3>Case Studies & Examples</h3>
+                        
+                        <div class="image-gallery">
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="City skyline at night with urban lighting">
+                                <div class="gallery-caption">Real City Night Lighting</div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Digital city environment with futuristic lighting">
+                                <div class="gallery-caption">Digital City Environment</div>
+                            </div>
+                            <div class="gallery-item">
+                                <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Architectural lighting design">
+                                <div class="gallery-caption">Architectural Lighting Design</div>
+                            </div>
+                        </div>
+                        
+                        <div class="case-study">
+                            <h4>Case 7 -- Lighting a Digital City vs. a Real City</h4>
+                            <p>A look at how a city-building video game (e.g. <em>SimCity</em> or the detailed environments of <em>Grand Theft Auto</em>) approaches urban lighting, compared with a real urban lighting masterplan (for instance, how Paris or Tokyo orchestrates facade lighting, street lighting, and signage). What inspirations can urban designers draw from the atmospheric nighttime skyline of a game city, and how do game artists, in turn, base their designs on iconic real cities?</p>
+                        </div>
+
+                        <div class="case-study">
+                            <h4>Case 8 -- Collaborative Design Exercise Recap</h4>
+                            <p>We briefly revisit one example from our interactive exercises where a participant's idea stood out as a cross-disciplinary insight (e.g. a game-inspired dynamic light feature for a building, or an architecturally-inspired realistic shadow detail in a game level). By highlighting a real suggestion from the group, we illustrate how blending perspectives can yield creative ideas neither field might have developed alone.</p>
+                        </div>
+                    </div>
+
+                    <div class="interactive-element fade-in">
+                        <h3>Interactive Element: Open Forum Brainstorm</h3>
+                        <p>In this final interactive segment, we open the floor for a brainstorm: <strong>"One Idea to Apply."</strong> Each participant (or team) is asked to share one specific idea they plan to apply in their own work, inspired by today's sessions.</p>
+                        <button class="challenge-button" onclick="startBrainstorm()">Start Brainstorm</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section id="conclusion" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Conclusion and Key Takeaways</h2>
+                    <p class="section-subtitle">Lighting is a universal language in environmental design, whether the environment is physical or virtual</p>
+                </div>
+
+                <div class="learning-objectives fade-in">
+                    <h3>Core Message</h3>
+                    <p>By examining lighting through both the architect's and the game designer's eyes, we gain a richer toolkit for shaping experiences. Key takeaways include:</p>
+                </div>
+
+                <div class="objectives-grid fade-in">
+                    <div class="objective-card">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Storytelling through lighting" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🎭 Storytelling & Mood</h3>
+                        <p>In both architecture and video games, lighting is not just illumination but a <em>storyteller</em>, a <em>guide</em>, and a <em>mood setter</em>. It subtly influences how people feel and behave in a space. Good lighting design in any context requires thinking about the human experience at the center.</p>
+                    </div>
+                    <div class="objective-card">
+                        <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Wayfinding and orientation lighting" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🧭 Orientation & Focus</h3>
+                        <p>Light naturally draws the eye, so use it deliberately. Whether you want a player to find a hidden path or a visitor to notice an emergency exit, placing light strategically can achieve that without words. Both fields benefit from remembering that often <em>"less is more"</em> -- a single well-placed light can replace a dozen signs or instructions.</p>
+                    </div>
+                    <div class="objective-card">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Thematic lighting design" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🎨 Narrative & Theme</h3>
+                        <p>Thematic lighting unifies design. A strong concept for lighting (e.g. <em>"dappled forest light"</em> or <em>"neon dystopia"</em>) can inform everything from fixture choice to color palette. Embrace lighting as an expressive medium: architects can borrow theatrical drama to make spaces memorable, and game creators can ground fantastical scenes with architectural realism for authenticity.</p>
+                    </div>
+                    <div class="objective-card">
+                        <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Collaborative design process" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px; margin-bottom: 1rem;">
+                        <h3>🤝 Collaboration & Experimentation</h3>
+                        <p>Perhaps most importantly, architects, interior designers, and game artists should continue to look outside their immediate field for inspiration. An architect might play a critically acclaimed video game to spark ideas for experiential lighting, while a game artist might study architectural masterpieces for lessons in timeless, elegant lighting design.</p>
+                    </div>
+                </div>
+
+                <div class="interactive-element fade-in">
+                    <h3>Final Challenge</h3>
+                    <p>Finally, we encourage all participants to apply their new insights to their upcoming projects. Whether designing a building or a level, ask yourself: <em>"What emotion or story do I want to tell with the lighting here?"</em> and <em>"How can light guide the users or players through the experience?"</em></p>
+                    <p><strong>Discussion Prompt (Post-Presentation):</strong> Consider one space (virtual or real) that left a strong impression on you because of its lighting. What did you feel in that space, and what lighting choices contributed to it?</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- References -->
+    <section class="references">
+        <div class="container">
+            <h2>References</h2>
+            <div class="reference-list">
+                <div class="reference-item">
+                    <a href="https://www.archdaily.com/1022444/shaping-atmospheres-with-lighting-a-human-centered-approach-to-emotional-design" target="_blank">Shaping Atmospheres with Lighting: A Human-Centered Approach to Emotional Design | ArchDaily</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://300mind.studio/blog/lighting-in-game-design/" target="_blank">Lighting Techniques in Games: The Secret to Immersive Storytelling</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://www.ixiegaming.com/blog/exploring-lighting-and-mood-in-game-art/" target="_blank">Exploring Lighting and Mood in Game Art</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://architizer.com/blog/inspiration/stories/lessons-from-video-game-architecture/" target="_blank">Level Up Your Design: 5 Lessons for Architects from Video Game Architecture</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://languageoflighting.com/newsfeed/illuminating-storytelling-in-architecture/" target="_blank">Illuminating Storytelling in Architectural Lighting Design</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://www.weareendpoint.com/wayfinding-news-and-views/a-guiding-light-illumination-in-wayfinding" target="_blank">A Guiding Light: Illumination In Wayfinding - Endpoint</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://book.leveldesignbook.com/process/lighting" target="_blank">Lighting | The Level Design Book</a>
+                </div>
+                <div class="reference-item">
+                    <a href="https://archeyes.com/church-of-light-by-tadao-ando-minimalism-and-the-play-of-light/" target="_blank">Church of Light by Tadao Ando: Minimalism and the Play of Light | ArchEyes</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Progress bar functionality
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Interactive challenge functions
+        function startMoodChallenge() {
+            alert('Mood Lighting Design Challenge Started!\n\nIn this challenge, you would work in small groups to develop lighting concepts for different moods like "serene dawn," "stormy anxiety," or "futuristic excitement." Each group would create concepts for both a game scene and a real room that evoke the assigned mood.\n\nThis exercise helps professionals consciously translate emotional lighting effects across disciplines.');
+        }
+
+        function startPathChallenge() {
+            alert('Light the Path Challenge Started!\n\nIn this challenge, you would work with a simple floor plan of a public space (like a small museum or outdoor plaza) to propose a lighting strategy that guides first-time visitors from entrance to exit, highlighting key points of interest.\n\nYou would also analyze how lighting guides players through game levels, then apply those principles to real architectural spaces.');
+        }
+
+        function startStoryboardChallenge() {
+            alert('Storyboarding with Light Challenge Started!\n\nIn this challenge, you would create a lighting storyboard for a short narrative in a space. You could choose either a game scenario (like a hero exploring an ancient temple) or a real-world scenario (like a visitor walking through a historical exhibit).\n\nIn 4-6 panels, you would describe how lighting changes sequentially to support story beats, emphasizing key moments and emotional shifts.');
+        }
+
+        function startBrainstorm() {
+            alert('Open Forum Brainstorm Started!\n\nIn this final interactive segment, you would share one specific idea you plan to apply in your own work, inspired by the presentation sessions.\n\nThis could be an architect wanting to experiment with color-changing accent lights in a retail project, or a game artist paying more attention to realistic daylight cycles when designing outdoor levels.\n\nThe group would then explore these ideas deeper, discussing implementation challenges and cross-disciplinary applications.');
+        }
+
+        // Add some dynamic lighting effects
+        function createFloatingLights() {
+            const hero = document.querySelector('.hero');
+            for (let i = 0; i < 5; i++) {
+                const light = document.createElement('div');
+                light.style.position = 'absolute';
+                light.style.width = '4px';
+                light.style.height = '4px';
+                light.style.background = 'rgba(255, 255, 255, 0.6)';
+                light.style.borderRadius = '50%';
+                light.style.left = Math.random() * 100 + '%';
+                light.style.top = Math.random() * 100 + '%';
+                light.style.animation = `float ${5 + Math.random() * 10}s ease-in-out infinite`;
+                light.style.animationDelay = Math.random() * 5 + 's';
+                hero.appendChild(light);
+            }
+        }
+
+        // Initialize floating lights
+        createFloatingLights();
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const sections = ['overview', 'session1', 'session2', 'session3', 'session4', 'conclusion'];
+            const currentSection = sections.find(section => {
+                const element = document.getElementById(section);
+                const rect = element.getBoundingClientRect();
+                return rect.top <= 100 && rect.bottom >= 100;
+            });
+            
+            const currentIndex = sections.indexOf(currentSection);
+            
+            if (e.key === 'ArrowDown' && currentIndex < sections.length - 1) {
+                e.preventDefault();
+                document.getElementById(sections[currentIndex + 1]).scrollIntoView({ behavior: 'smooth' });
+            } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+                e.preventDefault();
+                document.getElementById(sections[currentIndex - 1]).scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+</html>
